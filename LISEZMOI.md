@@ -21,7 +21,7 @@ car l'import n'a pas besoin de cette balise <?xml..>
 
 Puis appuyez sur "Submit Document". Vous aurez un résumé de l'import une fois l'import terminé. 
 
-Enfin, il faut reloader les indexes de solr, pour cela allez dans http://localhost:8983/solr/#/~cores/collection1 et cliquez sur "Reload". Les documents sont à présent indexés et ont peut faire des recherches.
+Enfin, il faut reloader les indexes de solr, pour cela allez dans http://localhost:8983/solr/#/~cores/collection1 et cliquez sur "Reload". Les documents sont à présent indexés et on peut faire des recherches.
 
  
 ##Démarrer
@@ -33,7 +33,7 @@ si les tests produisent des erreurs, c'est sans doute un problème avec le serve
 Pour palier au problème des tests on peut lancer jetty sans faire les tests, comme ceci:
 
 	mvn clean install -DskipTests jetty:run
-Dans ce cas, les requêtes vers Olanto produisent une erreur qui seront interceptées.
+Dans ce cas, les requêtes vers Olanto produisent une erreur qui sera interceptée.
 Par contre, la partie Solr fonctionnera sans problèmes.
 
 ###Les tests n'ont pas d'erreur
