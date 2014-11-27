@@ -1,0 +1,16 @@
+.form-group.inline {
+	display: inline-flex;
+}
+
+.form-group.inline label {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+
+.col-sm-2 select {
+	width: 60px;
+}
+
+.col-sm-10 input {
+	width: 300px;
+}

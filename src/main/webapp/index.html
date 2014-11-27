@@ -5,10 +5,19 @@
 <title>Insert title here</title>
 <link rel="stylesheet" type="text/css"
 	href="bootstrap/css/bootstrap.css"></link>
+<link rel="stylesheet" type="text/css" href="css/app.css"></link>
+<link rel="stylesheet" type="text/css" href="ngModal/ng-modal.css"></link>
 <script src="angular-1.2.18/angular.js"></script>
+<script src="ngModal/ng-modal.js"></script>
 
 <script>
-	var olantoApp = angular.module('olantoApp', []);
+	var olantoApp = angular.module('olantoApp', ["ngModal"]);
+	
+	olantoApp.config(function(ngModalDefaultsProvider) {
+        return ngModalDefaultsProvider.set({
+          closeButtonHtml: "<i class='fa fa-times'>X</i>"
+        });
+    });
 
 	olantoApp.controller('OlantoListCtrl', function($scope, Olanto) {
 
@@ -20,13 +29,24 @@
 		$scope.results = {};
 		$scope.results.errorMsg = "";
 		$scope.results.data = [];
-
+		
 		$scope.submitToSolr = function() {
 			$scope.results = Olanto.solrQuery($scope.myForm);
 		};
 
 		$scope.submitToOlanto = function() {
 			$scope.results = Olanto.query($scope.myForm);
+		};
+
+		
+		$scope.document = {};
+		$scope.modalShown = false;
+		$scope.toggleModal = function(result) {
+			$scope.document = result;
+			$scope.modalShown = !$scope.modalShown;
+		};
+		$scope.logClose = function() {
+			console.log('close!');
 		};
 	});
 
@@ -38,7 +58,7 @@
 				results.errorMsg = "";
 				results.data = [];
 				$http.get(
-						'/api/solr/search?key=CORPONU&source=' + theForm.source
+						'api/solr/search?key=CORPONU&source=' + theForm.source
 								+ '&target=' + theForm.target + '&q='
 								+ theForm.q).success(function(data) {
 					for (var i = 0; i < data.length; i++) {
@@ -54,7 +74,7 @@
 				results.errorMsg = "";
 				results.data = [];
 				$http.get(
-						'/api/solr/solrSearch?key=CORPONU&source='
+						'api/solr/solrSearch?key=CORPONU&source='
 								+ theForm.source + '&target=' + theForm.target
 								+ '&q=' + theForm.q).success(function(data) {
 					for (var i = 0; i < data.length; i++) {
@@ -67,13 +87,14 @@
 			}
 		}
 	});
+	
 </script>
 
 </head>
 <body class="container" style="width: 90%;">
 	<div ng-app="olantoApp">
 		<div ng-controller="OlantoListCtrl">
-		
+
 			<!-- Search form -->
 			<div>
 				<h4>Search</h4>
@@ -82,7 +103,7 @@
 					<form class="form" role="form">
 						<input type="hidden" name="key" value="CORPONU" />
 
-						<div class="form-group">
+						<div class="form-group inline">
 							<label class="control-label col-sm-2" for="source">Source</label>
 
 							<div class="col-sm-2">
@@ -92,9 +113,6 @@
 									<option selected value="fr">FR</option>
 								</select>
 							</div>
-						</div>
-						<div class="form-group">
-
 							<label class="control-label col-sm-2" for="target">Target</label>
 
 							<div class="col-sm-2">
@@ -104,8 +122,6 @@
 									<option value="fr">FR</option>
 								</select>
 							</div>
-						</div>
-						<div class="form-group">
 							<label class="control-label col-sm-2" for="q">Text</label>
 
 							<div class="col-sm-10">
@@ -130,31 +146,37 @@
 
 				<table class="table table-striped">
 					<tr>
-						
-						<th>Title</th>
+						<th>Filename</th>
 						<th>Language</th>
 						<th>Categories</th>
 						<th>Content</th>
 					</tr>
 					<tr ng-repeat="result in results.data">
-						<td style="width: 180px">{{result.name}}</td>
+						<td style="width: 180px"><a ng-click='toggleModal(result)'>{{result.filename}}</a></td>
 						<td style="width: 40px">{{result.language}}</td>
 						<td style="width: 40px">
 							<div ng-repeat="cat in result.cat">
 								<span>{{cat}}&nbsp;</span>
 							</div>
 						</td>
-						<td><span>{{result.content[0].substring(0, 500)}}</span> <span
-							ng-show="result.content[0].length > 500">...</span></td>
+						<td><span>{{result.content[0].substring(0, 100)}}</span> <span
+							ng-show="result.content[0].length > 100">...</span></td>
 					</tr>
 				</table>
 			</div>
-			
+
+
+
 			<!-- No results and error message if any-->
 			<div class="container-fluid">
 				<label ng-show="!results.data.length">No results for this
 					text!</label> <label ng-show="results.errorMsg">{{results.errorMsg}}</label>
 			</div>
+
+			<modal-dialog show="modalShown" dialog-title="{{document.filename}}" width="80%" on-close="logClose()">
+				<p><pre style="height:45em;overflow:auto;">{{document.content[0]}}</pre></p>
+			</modal-dialog>
+
 		</div>
 	</div>
 
