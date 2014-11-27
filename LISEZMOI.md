@@ -36,8 +36,29 @@ Pour palier au problème des tests on peut lancer jetty sans faire les tests, co
 Dans ce cas, les requêtes vers Olanto produisent une erreur qui sera interceptée.
 Par contre, la partie Solr fonctionnera sans problèmes.
 
-###Les tests n'ont pas d'erreur
-Lancer simplement:
+##Démarrer avec Jetty
+Exécuter la commande:
 
 	mvn clean install jetty:run 
+
+##Démarrer dans Tomcat7
+###Configuration
+
+Dans le fichier setenv.bat qui se trouve dans %CATALINA_HOME%\bin, il faut le créer s'il n'existe pas, ajoutez la variable d'environnement :
+
+	-Dfile.encoding=UTF-8
+à JAVA_OPTS, par exemple:
+
+	set JAVA_OPTS=-Dfile.encoding=UTF-8
+
+###Publier le war
+Exécuter la commande:
+
+	mvn clean install
+afin d'obtenir le war.
+
+Maintenant, copiez le fichier target/mysearch-xxx.war dans le répertoire %CATALINA_HOME%\webapps\. Vous pouvez laisser la version ou l'enlever.
+
+Vous pouvez aller sur le navigateur à l'adresse: <a href="http://localhost:8080/mysearch">http://localhost:8080/mysearch</a> .
+
 
